@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 // material-ui
 import { Stack, Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
@@ -13,20 +15,27 @@ import { Link } from 'react-router-dom';
 // components
 import TeacherActions from './components/teacherActions';
 
-const createData = (document, name, lastName, address, age) => {
-  return { document, name, lastName, address, age };
-};
-
-const rows = [
-  createData(1234567890, 'Juliana', 'Perez Solis', 'Calle 10 # 25-16, Barrio San Jose, Bogota', 32),
-  createData(2345678901, 'Luisa Fernandez', 'Ortiz Cruz', 'Avenida 5 # 14-78, Conjunto Residencial Las Acacias, Medellin', 27),
-  createData(3456789012, 'Juan Carlos', 'Rodriguez Gomez', 'Carrera 7 # 14-20, Barrio La Candelaria, Cali', 41),
-  createData(4567890123, 'Martin', 'Hernandez Torres', 'Calle 80 # 50-30, Conjunto Residencial Los Pinos, Barranquilla', 24),
-  createData(5678901234, 'Ana Maria', 'Gutierrez Lopez', 'Calle 100 # 15-40, Conjunto Residencial Los Alpes, Bucaramanga', 38),
-  createData(6789012345, 'Pablo', 'Castro Ramirez', 'Carrera 25 # 30-10, Barrio El Prado, Cartagena', 28)
-];
-
 const Teachers = () => {
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:9000/api/teachers');
+        if (response.ok) {
+          const data = await response.json();
+          setRows(data);
+        } else {
+          throw new Error('Error getting the data');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Stack spacing={3}>
       <Grid container direction="row-reverse">
@@ -51,16 +60,16 @@ const Teachers = () => {
               </TableHead>
               <TableBody>
                 {rows.map((row) => (
-                  <TableRow key={row.document} sx={{ '&:last-child td,&:last-child th': { border: 0 } }}>
+                  <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                     <TableCell component="th" scope="row">
-                      {row.document}
+                      {row.numberDocument}
                     </TableCell>
                     <TableCell align="right">{row.name}</TableCell>
                     <TableCell align="right">{row.lastName}</TableCell>
                     <TableCell align="right">{row.address}</TableCell>
                     <TableCell align="right">{row.age}</TableCell>
                     <TableCell align="right">
-                      <TeacherActions teacherId={row.document} />
+                      <TeacherActions teacherId={row._id} />
                     </TableCell>
                   </TableRow>
                 ))}

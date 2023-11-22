@@ -6,7 +6,7 @@ import MainLayout from 'layout/MainLayout/index';
 
 const Teachers = Loadable(lazy(() => import('pages/teachers')));
 const Create = Loadable(lazy(() => import('pages/teachers/create')));
-const Edit = Loadable(lazy(() => import('pages/teachers/components/edit')));
+const Edit = Loadable(lazy(() => import('pages/teachers/edit')));
 
 // ===================================|| MAIN ROUTING || ===================================== //
 

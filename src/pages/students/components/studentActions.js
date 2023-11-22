@@ -18,8 +18,30 @@ const StudentActions = ({ studentId }) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const deleteStudent = async () => {
+    // Cerrar modal
+    try {
+      const response = await fetch(`http://localhost:9000/api/students/${studentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const result = await response.json();
+      console.log('Success:', result);
+
+      // Refrescar la pagina
+      window.location.reload();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    handleClose();
   };
 
   return (
@@ -49,11 +71,12 @@ const StudentActions = ({ studentId }) => {
           }
         }}
       >
-        <MenuItem onClick={handleClose} disableRipple component={Link} to={'/students/edit/${studentId}'}>
+        <MenuItem disableRipple component={Link} to={`/students/edit/${studentId}`}>
           <EditOutlined style={{ marginRight: 10 }} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
+
+        <MenuItem onClick={deleteStudent} disableRipple>
           <DeleteOutlined style={{ marginRight: 10 }} />
           Delete
         </MenuItem>
@@ -63,7 +86,7 @@ const StudentActions = ({ studentId }) => {
 };
 
 StudentActions.propTypes = {
-  studentId: PropTypes.number
+  studentId: PropTypes.string
 };
 
 export default StudentActions;
